@@ -1,0 +1,137 @@
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Swarm simulator save editor">
+    <meta name="keywords" content="cheat, swarmsim, swarmsimulaor, simulator, save, editor, save editor, cheat swarmsim, cheat swarm simulator, swarm simulator, game">
+    <meta name="author" content="Morgan Simon - github.com/MEth0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <title>Swarm Simulator save editor</title>
+
+</head>
+
+<body style="padding-top: 30px; background-color: f5f5f5;">
+
+    <div class="container">
+        <div class="page-header" style="border-bottom: 1px solid #ddd" ;>
+            <h1>Swarmsim saved game editor<br>
+            <small>How to use</small></h1>
+            <ul>
+                <li>Refresh the page to clear any existing values</li>
+                <li>Copy the saved game from under options</li>
+                <li>Paste the saved game in the first box</li>
+                <li>Click the Decode button</li>
+                <li>Edit the values you want to change. For large values, use exponent format, e.g. 1e+100. To highlight a value to edit, doubleclick</li>
+                <li>When done editing values, click the Encode button</li>
+                <li>Copy modified saved game from bottom box to your clipboard and paste back into swarmsim saved game under options</li>
+                <li>If import is successful, you will see a green checkbox. If import fails, you will see a red X and your game was not modified. You will have to repeat process starting at step 1.</li>
+            </ul>
+        </div>
+    </div>
+    <div class="container" style="margin-bottom: 60px;">
+        <label for="originalSavedGame">Paste encoded saved game here</label>
+        <textarea class="form-control" rows="5" id="originalSavedGame"></textarea>
+        <button type="button" class="btn btn-primary" onclick='decode();'>Decode</button><br>
+        <label for="decoded">Decoded Saved Game</label>
+        <textarea class="form-control" rows="12" id="decoded"></textarea>
+        <button type="button" class="btn btn-primary" onclick="encode()">Encode</button><br><br>
+        <label for="newSavedGame">Copy <kbd>Ctrl + C</kbd> Encoded save to Swarm Simulator options</label><br>
+        <textarea class="form-control" rows="5" id="newSavedGame"></textarea>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" style="background-color: #212121;">
+        <div class="container">
+            <br>
+            <div class="row">
+                <div class="col-xs-6">
+                    <p class="text-muted">&copy; 2016</p>
+                </div>
+                <div class="col-xs-6">
+                    <p class="text-right" style="color: #fff;"><a href="https://github.com/MEth0">Github</a> <i class="fa fa-github" aria-hidden="true"></i> - MEtho</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://use.fontawesome.com/82ec66e003.js"></script>
+    <script src="https://cdn.rawgit.com/pieroxy/lz-string/master/libs/lz-string.js"></script>
+    <script type="text/javascript">
+        var VERSION_DELIM = '|';
+        var PREFIX = btoa("Cheater :(\n\n");
+        var version;
+
+        function clear() {
+            document.getElementById('originalSavedGame').value = '';
+            document.getElementById('decoded').value = '';
+            document.getElementById('newSavedGame').value = '';
+            originalSavedGame
+        }
+
+        function debug(val) {
+            var isDebug = false;
+            if (isDebug) {
+                alert(val);
+            }
+        }
+
+        function decode() {
+            var originalSavedGame = document.getElementById('originalSavedGame').value
+            debug('originalSavedGame: ' + originalSavedGame);
+
+            var split = originalSavedGame.split(VERSION_DELIM);
+            debug('split: ' + split);
+
+            version = split[0];
+            var splitData = split[1];
+            debug('splitData: ' + splitData);
+
+            var encoded = splitData.substring(PREFIX.length);
+            debug('encoded: ' + encoded);
+
+            var decoded = LZString.decompressFromBase64(encoded.trim());
+            debug('decoded: ' + decoded);
+
+            //var jsonPretty = JSON.stringify(JSON.parse(decoded),null,2);
+            //debug('jsonPretty: ' + jsonPretty);
+
+            document.getElementById('decoded').value = decoded;
+        }
+
+        function encode() {
+            var decoded = document.getElementById("decoded").value;
+            debug('decoded: ' + decoded);
+
+            var encoded = LZString.compressToBase64(decoded);
+            debug('encoded: ' + encoded);
+
+            debug("version=" + version);
+            debug("prefix=" + PREFIX);
+
+            version
+
+            prefixedEncoded = PREFIX + encoded;
+            debug('prefixedEncoded: ' + prefixedEncoded);
+
+            debug('decoded: ' + decoded);
+            var newSavedGame = version + VERSION_DELIM + prefixedEncoded;
+            debug('newSavedGame: ' + newSavedGame);
+
+            document.getElementById('newSavedGame').value = newSavedGame;
+        }
+    </script>
+</body>
+
+</html>
