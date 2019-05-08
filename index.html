@@ -55,7 +55,7 @@
             <br>
             <div class="row">
                 <div class="col-xs-6">
-                    <p class="text-muted">&copy; 2016</p>
+                    <p class="text-muted" id="current-year">&copy; 2019</p>
                 </div>
                 <div class="col-xs-6">
                     <p class="text-right" style="color: #fff;"><a href="https://github.com/MEth0">Github</a> <i class="fa fa-github" aria-hidden="true"></i> - MEtho</p>
@@ -132,6 +132,8 @@
 
             document.getElementById('newSavedGame').value = newSavedGame;
         }
+        var today = new Date();
+        document.getElementById('current-year').innerHTML = '&copy; ' + today.getFullYear();
     </script>
 </body>
 
